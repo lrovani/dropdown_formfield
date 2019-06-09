@@ -12,63 +12,91 @@ class DropDownFormField extends FormField<dynamic> {
   final String textField;
   final String valueField;
   final Function onChanged;
+  final TextStyle titleStyle;
+  final TextStyle hintStyle;
+  final TextStyle errorStyle;
+  final TextStyle dropdownTextStyle;
+  final Color dropDownBackgroundColor;
+  final Color arrowButtonColor;
+  final Color themeHintColor;
 
   DropDownFormField(
       {FormFieldSetter<dynamic> onSaved,
       FormFieldValidator<dynamic> validator,
       bool autovalidate = false,
-      this.titleText = 'Title',
-      this.hintText = 'Select one option',
+      this.titleText = "Title",
+      this.titleStyle = const TextStyle(color: Colors.black),
+      this.hintText = "Select one option",
+      this.hintStyle = const TextStyle(color: Colors.grey),
+      this.dropdownTextStyle = const TextStyle(color: Colors.black),
       this.required = false,
-      this.errorText = 'Please select one option',
+      this.errorText = "Please select one option",
+      this.errorStyle =
+          const TextStyle(color: Colors.redAccent, fontSize: 12.0),
       this.value,
       this.dataSource,
       this.textField,
       this.valueField,
-      this.onChanged})
+      this.onChanged,
+      this.dropDownBackgroundColor = Colors.white,
+      this.arrowButtonColor = Colors.white,
+      this.themeHintColor = Colors.white})
       : super(
           onSaved: onSaved,
           validator: validator,
           autovalidate: autovalidate,
           builder: (FormFieldState<dynamic> state) {
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-                      labelText: titleText,
-                      filled: true,
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<dynamic>(
-                        hint: Text(
-                          hintText,
-                          style: TextStyle(color: Colors.grey.shade500),
+            return Center(
+                child: Theme(
+              data: ThemeData(
+                  canvasColor: dropDownBackgroundColor,
+                  hintColor: themeHintColor),
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    InputDecorator(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
+                          labelText: titleText,
+                          labelStyle: titleStyle,
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white))),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<dynamic>(
+                          iconEnabledColor: arrowButtonColor,
+                          isExpanded: true,
+                          hint: Text(
+                            hintText,
+                            style: hintStyle,
+                          ),
+                          value: value == '' ? null : value,
+                          onChanged: (dynamic newValue) {
+                            state.didChange(newValue);
+                            onChanged(newValue);
+                          },
+                          items: dataSource.map((item) {
+                            return DropdownMenuItem<dynamic>(
+                              value: item[valueField],
+                              child: Text(
+                                item[textField],
+                                style: dropdownTextStyle,
+                              ),
+                            );
+                          }).toList(),
                         ),
-                        value: value == '' ? null : value,
-                        onChanged: (dynamic newValue) {
-                          state.didChange(newValue);
-                          onChanged(newValue);
-                        },
-                        items: dataSource.map((item) {
-                          return DropdownMenuItem<dynamic>(
-                            value: item[valueField],
-                            child: Text(item[textField]),
-                          );
-                        }).toList(),
                       ),
                     ),
-                  ),
-                  SizedBox(height: state.hasError ? 5.0 : 0.0),
-                  Text(
-                    state.hasError ? state.errorText : '',
-                    style: TextStyle(color: Colors.redAccent.shade700, fontSize: state.hasError ? 12.0 : 0.0),
-                  ),
-                ],
+                    SizedBox(height: state.hasError ? 5.0 : 0.0),
+                    Text(
+                      state.hasError ? state.errorText : '',
+                      style: errorStyle,
+                    ),
+                  ],
+                ),
               ),
-            );
+            ));
           },
         );
 }
