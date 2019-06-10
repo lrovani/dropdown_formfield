@@ -32,7 +32,7 @@ class DropDownFormField extends FormField<dynamic> {
       this.required = false,
       this.errorText = "Please select one option",
       this.errorStyle =
-          const TextStyle(color: Colors.redAccent, fontSize: 12.0),
+          const TextStyle(color: Colors.red, fontSize: 14.0),
       this.value,
       this.dataSource,
       this.textField,
@@ -50,7 +50,7 @@ class DropDownFormField extends FormField<dynamic> {
                 child: Theme(
               data: ThemeData(
                   canvasColor: dropDownBackgroundColor,
-                  hintColor: themeHintColor),
+                  hintColor: state.hasError ? Colors.red : themeHintColor),
               child: Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +93,7 @@ class DropDownFormField extends FormField<dynamic> {
                       state.hasError ? state.errorText : '',
                       style: errorStyle,
                     ),
+                    SizedBox(height: state.hasError ? 10.0 : 0.0),
                   ],
                 ),
               ),
