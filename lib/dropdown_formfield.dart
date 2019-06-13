@@ -76,7 +76,7 @@ class DropDownFormField extends FormField<dynamic> {
                             state.didChange(newValue);
                             onChanged(newValue);
                           },
-                          items: dataSource.map((item) {
+                          items: dataSource == null ? [] : dataSource.map((item) {
                             return DropdownMenuItem<dynamic>(
                               value: item[valueField],
                               child: Text(
